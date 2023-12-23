@@ -1,0 +1,432 @@
+/*
+
+HI, THIS IS JUST A CODE FOR A TWO DIGIT COUNTER.
+
+IT USES AN ULTRASONIC SENSOR, ARDUINO UNO, AND TWO SEVEN-SEGMENT LEDS
+
+*/
+
+//SOME VARIABLES
+
+int izq = 0;
+int der = 1;
+
+int numbers[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+int counter = 0;
+int izqCounter = 0;
+int derCounter = 0;
+
+int trigPin = 12;
+int echoPin = 13;
+
+float duration, distance; 
+
+void setup() {
+
+  //OUTPUT PINS
+
+  //LED1
+
+  pinMode(A5, OUTPUT);
+  pinMode(A4, OUTPUT);
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+
+  //LED2
+
+  pinMode(7, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(A0, OUTPUT);
+  pinMode(A1, OUTPUT);
+
+  //ULTRASONIC SETUP
+
+  pinMode(trigPin, OUTPUT);  
+	pinMode(echoPin, INPUT);  
+	Serial.begin(9600);
+
+  //CLEARING ALL PINS
+
+  numberEreaser();  
+
+}
+
+void loop() {
+
+  //PULSE FOR ULTRASONIC DISTANCE SENSOR
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  //PULSE READ & DISTANCE ALGORITHM
+
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration*.0343)/2;
+
+  //SERIAL PRINT
+
+  Serial.print("Distance: ");
+  Serial.println(distance);
+  Serial.print("Counts: ");
+  Serial.println(counter);
+
+  //EXCEPTIONS
+
+  if(counter == 100){
+
+    izqCounter = 0;
+    derCounter = 0;
+
+  }
+
+  if(derCounter == 10){
+
+    izqCounter++;
+    derCounter = 0;
+
+  }
+
+  //LED CONTROL
+
+  numberWriter(derCounter, der);
+  numberWriter(izqCounter, izq);
+
+  delay(100);
+
+  //COUNTER CODE
+
+  while(distance < 10){
+
+    //OBJECT IN-FRONT DETECTION
+
+    //PULSE FOR ULTRASONIC DISTANCE SENSOR
+
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+
+    //PULSE READ & DISTANCE ALGORITHM
+
+    duration = pulseIn(echoPin, HIGH);
+    distance = (duration*.0343)/2;
+
+    //SERIAL PRINT
+
+    Serial.print("Distance: ");
+    Serial.println(distance);
+    Serial.print("Counts: ");
+    Serial.println(counter);
+    delay(100);
+
+    //LEDS OFF WHILE OBJECT IS IN FRONT
+
+    numberEreaser();
+
+    //OBJECT GONE DETECTION
+
+    if(distance > 10){
+
+      //UPLOAD VARIABLE INFO & BREAK FROM LOOP
+
+      counter++;
+      derCounter++;
+      delay(100);
+      break;
+
+    }
+    
+  }
+  
+  //REPEAT
+
+}
+
+//FUNCTIONS
+//MY SPECIFIC PINS MAY CHANGE FOR YOU
+
+//FUNCTION TO TURN OFF LEDS
+
+void numberEreaser(){
+
+    digitalWrite(A5, LOW);
+    digitalWrite(A4, LOW);
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    digitalWrite(4, LOW);
+    digitalWrite(5, LOW);
+    digitalWrite(6, LOW);
+    digitalWrite(7, LOW);
+    digitalWrite(8, LOW);
+    digitalWrite(9, LOW);
+    digitalWrite(10, LOW);
+    digitalWrite(11, LOW);
+    digitalWrite(A0, LOW);
+    digitalWrite(A1, LOW);
+
+  }
+
+//FUNCTION TO WRITE A NUMBER ON ANY OF THE TWO LEDS
+
+void numberWriter(int number, int side){
+
+  if (side == 0){
+
+    if (number == 0){
+
+      digitalWrite(A5, HIGH);
+      digitalWrite(A4, HIGH);
+      digitalWrite(2, HIGH);
+      digitalWrite(3, LOW);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, HIGH);
+      digitalWrite(6, HIGH);
+
+    }
+
+    if (number == 1){
+      
+      digitalWrite(A5, HIGH);
+      digitalWrite(A4, LOW);
+      digitalWrite(2, LOW);
+      digitalWrite(3, LOW);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, LOW);
+      digitalWrite(6, LOW);
+
+    }
+
+    if (number == 2){
+      
+      digitalWrite(A5, HIGH);
+      digitalWrite(A4, HIGH);
+      digitalWrite(2, LOW);
+      digitalWrite(3, HIGH);
+      digitalWrite(4, LOW);
+      digitalWrite(5, HIGH);
+      digitalWrite(6, HIGH);
+
+    }
+
+    if (number == 3){
+      
+      digitalWrite(A5, HIGH);
+      digitalWrite(A4, HIGH);
+      digitalWrite(2, LOW);
+      digitalWrite(3, HIGH);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, HIGH);
+      digitalWrite(6, LOW);
+
+    }
+
+    if (number == 4){
+      
+      digitalWrite(A5, HIGH);
+      digitalWrite(A4, LOW);
+      digitalWrite(2, HIGH);
+      digitalWrite(3, HIGH);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, LOW);
+      digitalWrite(6, LOW);
+
+    }
+
+    if (number == 5){
+      
+      digitalWrite(A5, LOW);
+      digitalWrite(A4, HIGH);
+      digitalWrite(2, HIGH);
+      digitalWrite(3, HIGH);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, HIGH);
+      digitalWrite(6, LOW);
+
+    }
+
+    if (number == 6){
+      
+      digitalWrite(A5, LOW);
+      digitalWrite(A4, HIGH);
+      digitalWrite(2, HIGH);
+      digitalWrite(3, HIGH);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, HIGH);
+      digitalWrite(6, HIGH);
+
+    }
+
+    if (number == 7){
+      
+      digitalWrite(A5, HIGH);
+      digitalWrite(A4, HIGH);
+      digitalWrite(2, LOW);
+      digitalWrite(3, LOW);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, LOW);
+      digitalWrite(6, LOW);
+
+    }
+
+    if (number == 8){
+      
+      digitalWrite(A5, HIGH);
+      digitalWrite(A4, HIGH);
+      digitalWrite(2, HIGH);
+      digitalWrite(3, HIGH);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, HIGH);
+      digitalWrite(6, HIGH);
+
+    }
+
+    if (number == 9){
+      
+      digitalWrite(A5, HIGH);
+      digitalWrite(A4, HIGH);
+      digitalWrite(2, HIGH);
+      digitalWrite(3, HIGH);
+      digitalWrite(4, HIGH);
+      digitalWrite(5, LOW);
+      digitalWrite(6, LOW);
+
+    }
+
+  }
+
+  if (side == 1){
+
+    if (number == 0){
+
+      digitalWrite(7, HIGH);
+      digitalWrite(8, HIGH);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, HIGH);
+      digitalWrite(A0, HIGH);
+      digitalWrite(A1, LOW);
+
+    }
+
+    if (number == 1){
+      
+      digitalWrite(7, HIGH);
+      digitalWrite(8, LOW);
+      digitalWrite(9, LOW);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, LOW);
+      digitalWrite(A0, LOW);
+      digitalWrite(A1, LOW);
+
+    }
+
+    if (number == 2){
+      
+      digitalWrite(7, LOW);
+      digitalWrite(8, HIGH);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, HIGH);
+      digitalWrite(A0, LOW);
+      digitalWrite(A1, HIGH);
+
+    }
+
+    if (number == 3){
+      
+      digitalWrite(7, HIGH);
+      digitalWrite(8, HIGH);
+      digitalWrite(9, LOW);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, HIGH);
+      digitalWrite(A0, LOW);
+      digitalWrite(A1, HIGH);
+
+    }
+
+    if (number == 4){
+      
+      digitalWrite(7, HIGH);
+      digitalWrite(8, LOW);
+      digitalWrite(9, LOW);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, LOW);
+      digitalWrite(A0, HIGH);
+      digitalWrite(A1, HIGH);
+
+    }
+
+    if (number == 5){
+      
+      digitalWrite(7, HIGH);
+      digitalWrite(8, HIGH);
+      digitalWrite(9, LOW);
+      digitalWrite(10, LOW);
+      digitalWrite(11, HIGH);
+      digitalWrite(A0, HIGH);
+      digitalWrite(A1, HIGH);
+
+    }
+
+    if (number == 6){
+      
+      digitalWrite(7, HIGH);
+      digitalWrite(8, HIGH);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, LOW);
+      digitalWrite(11, HIGH);
+      digitalWrite(A0, HIGH);
+      digitalWrite(A1, HIGH);
+
+    }
+
+    if (number == 7){
+      
+      digitalWrite(7, HIGH);
+      digitalWrite(8, LOW);
+      digitalWrite(9, LOW);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, HIGH);
+      digitalWrite(A0, LOW);
+      digitalWrite(A1, LOW);
+
+    }
+
+    if (number == 8){
+      
+      digitalWrite(7, HIGH);
+      digitalWrite(8, HIGH);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, HIGH);
+      digitalWrite(A0, HIGH);
+      digitalWrite(A1, HIGH);
+
+    }
+
+    if (number == 9){
+      
+      digitalWrite(7, HIGH);
+      digitalWrite(8, LOW);
+      digitalWrite(9, LOW);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, HIGH);
+      digitalWrite(A0, HIGH);
+      digitalWrite(A1, HIGH);
+
+    }
+
+  }
+
+}
